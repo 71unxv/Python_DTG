@@ -46,6 +46,9 @@ import matplotlib.pyplot as plt
 
 
 def forwardMT1D(res,thick,freq):
+    res = np.asarray(res)
+    thick = np.asarray(thick)
+    freq = np.asarray(freq)
     mu = 4 * np.pi * 1E-7
     w = 2 * np.pi * freq
     Z = np.sqrt(1j * w * mu * res[-1])
