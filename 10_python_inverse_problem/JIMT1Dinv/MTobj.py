@@ -1,20 +1,20 @@
 """
   Created on :
-    18:40 GMT+7 - 07 Mar 2019 
+    18:40 GMT+7 - 07 Mar 2019
   Author     :
     github.com/71unxv
     github.com/LutfiZakaria
 ______________________________________________________________________________________________
   Note       :
-    Python For Geophysical data processing and Inverse Problem    
+    Python For Geophysical data processing and Inverse Problem
 ______________________________________________________________________________________________
-    
+
    Cheers!
 """
 # ============================================================================================
 # Import Library
-import numpy as np
-import JIMT1Dinv.MTfunc as mt
+
+#import JIMT1Dinv.MTfunc as mt
 #import matplotlib.pyplot as plt
 
 
