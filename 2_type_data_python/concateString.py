@@ -2,7 +2,7 @@ A = 'hello'
 B = 'world'
 C = A + " " +B
 print(C)
-print(f"{C}")
+# print(f"{C}")
 
 A = 10
 B = 'meter'
@@ -12,3 +12,6 @@ B = 'meter'
 A,B = 3,4
 print(A)
 print(B)
+
+A = 100
+print(f"Ini adalah uang {A}")

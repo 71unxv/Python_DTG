@@ -12,17 +12,17 @@ class ChangeNumber() :
     def printNumber(self) :
         print("Now the number is ", self.number)
 
-""" Sequential Programming """
-#1. Create Number
-number = 10
-print("Now the number is ", number)
-#2. Change Number
-number = 5
-print("Now the number is ", number)
-#3. Double the number
-number = number * number
-print("Now the number is ", number)
-""" ---------------------------- """
+# """ Sequential Programming """
+# #1. Create Number
+# number = 10
+# print("Now the number is ", number)
+# #2. Change Number
+# number = 5
+# print("Now the number is ", number)
+# #3. Double the number
+# number = number * number
+# print("Now the number is ", number)
+# """ ---------------------------- """
 
 """ OOP Programming  """
 # Assume we have make a class

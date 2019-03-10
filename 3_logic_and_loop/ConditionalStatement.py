@@ -1,7 +1,5 @@
-A = 0
-if A == 0 :
-    print("This is :", True)
-elif A == 1:
-    print("This is : ", True)
-else :
-    print("This is :", False)
+
+
+count = 0
+count = count + 1
+print(count)
