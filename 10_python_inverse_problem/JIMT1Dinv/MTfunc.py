@@ -14,7 +14,7 @@ ________________________________________________________________________________
 # ============================================================================================
 # Import Library
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 
@@ -46,25 +46,25 @@ import matplotlib.pyplot as plt
 
 
 def forwardMT1D(res,thick,freq):
-    res = np.asarray(res)
-    thick = np.asarray(thick)
-    freq = np.asarray(freq)
+    # res = np.asarray(res)
+    # thick = np.asarray(thick)
+    # freq = np.asarray(freq)
     mu = 4 * np.pi * 1E-7
     w = 2 * np.pi * freq
     Z = np.sqrt(1j * w * mu * res[-1])
-    print(res[-1])
+#    print(res[-1])
     for ii in range(len(res)-2,-1,-1):
         dj = np.sqrt(w * mu * (1.0/res[ii]) * 1j)
         wj = dj * res[ii]
         ej = np.exp (-2 * thick[ii]*dj)
-        print(res[ii])
+#        print(res[ii])
         rj = (wj - Z)/(wj + Z)
         re = rj*ej
         Z = wj * ((1 - re)/(1 + re))
 
     AppRes = (abs(Z)**2)/(mu * w)
     Phase = np.arctan2(Z.imag,Z.real)
-    print("=== "*10)
+#    print("=== "*10)
     return AppRes,Phase
 
 
@@ -93,15 +93,15 @@ def calculateJacobMT1D(res,thick,freq,par):
 
 
 
-def clear_all():
-    """Clears all the variables from the workspace of the spyder application."""
-    gl = globals().copy()
-    for var in gl:
-        if var[0] == '_': continue
-        if 'func' in str(globals()[var]): continue
-        if 'module' in str(globals()[var]): continue
-
-        del globals()[var]
+#def clear_all():
+#    """Clears all the variables from the workspace of the spyder application."""
+#    gl = globals().copy()
+#    for var in gl:
+#        if var[0] == '_': continue
+#        if 'func' in str(globals()[var]): continue
+#        if 'module' in str(globals()[var]): continue
+#
+#        del globals()[var]
 # if __name__ == "__main__":
 #     clear_all()
 

@@ -21,3 +21,17 @@ import matplotlib.pyplot as plt
 
 # ============================================================================================
 # Run Code! Run!
+
+read data
+initial data
+
+create jacob
+
+
+def MTinv(Data,Model,Invparam):
+
+
+
+
+
+

@@ -18,6 +18,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import JIMT1Dinv.MTfunc as mt
 from matplotlib.gridspec import GridSpec
+import MTobj
+
+
+
+
+
 
 
 # ============================================================================================
@@ -36,19 +42,8 @@ Frequency = 10 **(np.linspace(-4, 4, 40))
 
 AppRes = np.zeros(len(Frequency))
 Phase = np.copy(AppRes)
-# for ii in range(len(Frequency)):
-#     AppRes[ii],Phase[ii] = mt.forwardMT1D(resistivity, thickness, Frequency(ii))
-
-
-
-
-
-
-
-
-
-
-
+for ii in range(len(Frequency)):
+    AppRes[ii],Phase[ii] = mt.forwardMT1D(resistivity, thickness, Frequency[ii])
 
 fig01 = plt.figure(1)
 grd = GridSpec(2,2) # create grid arrange template
@@ -62,25 +57,36 @@ plotModelRes.set_xscale("log")
 plotModelRes.set_title("1D Resistivity Profile")
 plotModelRes.grid()
 
-# plotDataApp = fig01.add_subplot(grd[0,0])
-# plotDataApp.plot(Frequency,Phase)
-# plotDataApp.set_xscale("log")
-# plotDataApp.set_xlabel("Frequency")
-# plotDataApp.set_yscale("log")
-# plotDataApp.set_ylabel("Apparent Resistivity")
-#
-#
-#
-#
-# plotDataPhs = fig01.add_subplot(grd[0,0])
-# plotDataPhs.plot(Frequency, AppRes)
-# plotDataPhs.set_xscale("log")
-# plotDataPhs.set_xlabel("Frequency")
-# plotDataPhs.set_yscale("log")
-# plotDataPhs.set_ylabel("Apparent Resistivity")
+plotDataApp = fig01.add_subplot(grd[0,0])
+plotDataApp.plot(Frequency,Phase,("k."))
+plotDataApp.set_xscale("log")
+plotDataApp.set_xlabel("Frequency")
+plotDataApp.set_yscale("log")
+plotDataApp.set_ylabel("Phase")
+plotDataApp.grid()
 
+
+
+plotDataPhs = fig01.add_subplot(grd[1,0])
+plotDataPhs.plot(Frequency, AppRes,("r."))
+plotDataPhs.set_xscale("log")
+plotDataPhs.set_xlabel("Frequency")
+plotDataPhs.set_yscale("log")
+plotDataPhs.set_ylabel("Apparent Resistivity")
+plotDataPhs.grid()
 
 fig01.suptitle("Forward Modelling MT 1D")
 fig01.show()
+
+dataDummy = MTobj.DataMT(AppRes,Phase,Frequency)
+modelDummy = MTobj.ModelMT(resistivity,thickness)
+
+dataDummy.save('dataDummy.MT')
+modelDummy.save('modelDummy.mod')
+
+
+
+
+
 
 
