@@ -38,36 +38,54 @@ DataDummy = mt.DataMT(AppRes,Phase,Frequency)
 
 
 DataDummy = mt.forwardMT1D(ModelDummy,DataDummy)
+#
+# fig01 = plt.figure(1)
+# grd = GridSpec(2,2) # create grid arrange template
+#
+# plotModelRes = fig01.add_subplot(grd[:, 1])
+#
+# plotModelRes.step((ModelDummy.res),np.cumsum(ModelDummy.thick))
+# plotModelRes.invert_yaxis()
+# plotModelRes.set_ylabel("Depth(m)")
+# plotModelRes.set_xlabel("Resistivity(ohm)")
+# plotModelRes.set_xscale("log")
+# plotModelRes.set_title("1D Resistivity Profile")
+# plotModelRes.grid()
+#
+# plotDataApp = fig01.add_subplot(grd[0,0])
+#
+# plotDataApp.plot(DataDummy.Frequency,DataDummy.Phase,("k."))
+# plotDataApp.set_xscale("log")
+# plotDataApp.set_xlabel("Frequency")
+# plotDataApp.set_yscale("log")
+# plotDataApp.set_ylabel("Phase")
+# plotDataApp.grid()
+#
+# plotDataPhs = fig01.add_subplot(grd[1,0])
+#
+# plotDataPhs.plot(DataDummy.Frequency,DataDummy.AppRes,("r."))
+# plotDataPhs.set_xscale("log")
+# plotDataPhs.set_xlabel("Frequency")
+# plotDataPhs.set_yscale("log")
+# plotDataPhs.set_ylabel("Apparent Resistivity")
+# plotDataPhs.grid()
+#
+# fig01.suptitle("Forward Modelling MT 1D")
+# fig01.show()
+
 
 fig01 = plt.figure(1)
 grd = GridSpec(2,2) # create grid arrange template
 
 plotModelRes = fig01.add_subplot(grd[:, 1])
-plotModelRes.step((ModelDummy.res),np.cumsum(ModelDummy.thick))
-plotModelRes.invert_yaxis()
-plotModelRes.set_ylabel("Depth(m)")
-plotModelRes.set_xlabel("Resistivity(ohm)")
-plotModelRes.set_xscale("log")
-plotModelRes.set_title("1D Resistivity Profile")
-plotModelRes.grid()
+ModelDummy.plotModel(plotModelRes)
 
 plotDataApp = fig01.add_subplot(grd[0,0])
-plotDataApp.plot(DataDummy.Frequency,DataDummy.Phase,("k."))
-plotDataApp.set_xscale("log")
-plotDataApp.set_xlabel("Frequency")
-plotDataApp.set_yscale("log")
-plotDataApp.set_ylabel("Phase")
-plotDataApp.grid()
-
-
-
+DataDummy.plotData(plotDataApp = plotDataApp)
+#
+#
 plotDataPhs = fig01.add_subplot(grd[1,0])
-plotDataPhs.plot(DataDummy.Frequency,DataDummy.AppRes,("r."))
-plotDataPhs.set_xscale("log")
-plotDataPhs.set_xlabel("Frequency")
-plotDataPhs.set_yscale("log")
-plotDataPhs.set_ylabel("Apparent Resistivity")
-plotDataPhs.grid()
+DataDummy.plotData(plotDataPhs = plotDataPhs)
 
 fig01.suptitle("Forward Modelling MT 1D")
 fig01.show()

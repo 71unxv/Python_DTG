@@ -33,18 +33,23 @@ class ModelMT:
         self.Ycoor = Ycoor
         self.Zcoor = Zcoor
 
-    def plotModel(self):
-        plt.step(self.res, np.cumsum(self.thick))
-        plt.gca().invert_yaxis()
-        plt.show()
+    def plotModel(self,plotModelRes):
+        plotModelRes.step((self.res), np.cumsum(self.thick))
+        plotModelRes.invert_yaxis()
+        plotModelRes.set_ylabel("Depth(m)")
+        plotModelRes.set_xlabel("Resistivity(ohm)")
+        plotModelRes.set_xscale("log")
+        plotModelRes.set_title("1D Resistivity Profile")
+        plotModelRes.grid()
+        return plotModelRes
 
     def save(self, FileName):
         with open(FileName, 'wb') as output:  # Python 3: open(..., 'wb')
             pickle.dump(self, output)
-
+    @staticmethod
     def read(FileName):
-        with open(FileName, 'rb') as input:  # Python 3: open(..., 'rb')
-            hasilread = pickle.load(input)
+        with open(FileName, 'rb') as inputdata:  # Python 3: open(..., 'rb')
+            hasilread = pickle.load(inputdata)
         return hasilread
 
 
@@ -57,6 +62,7 @@ class DataMT:
         self.Xcoor = Xcoor
         self.Ycoor = Ycoor
         self.Zcoor = Zcoor
+
         if AppResWeight == 0:
             self.AppResWeight = np.ones(len(AppRes))
         if PhaseWeight == 0:
@@ -65,18 +71,73 @@ class DataMT:
     def save(self, FileName):
         with open(FileName, 'wb') as output:  # Python 3: open(..., 'wb')
             pickle.dump(self, output)
+    def plotData(self,plotDataApp = None, plotDataPhs = None):
 
+        if plotDataApp is not None:
+            # self.plotDataApp = plotDataApp
+            plotDataApp.plot(self.Frequency, self.Phase, ("k."))
+            plotDataApp.set_xscale("log")
+            plotDataApp.set_xlabel("Frequency")
+            plotDataApp.set_yscale("log")
+            plotDataApp.set_ylabel("Phase")
+            plotDataApp.grid()
+            return plotDataApp
+
+        elif plotDataPhs is not None:
+            # self.plotDataPhase = plotDataPhs
+            plotDataPhs.plot(self.Frequency, self.AppRes, ("r."))
+            plotDataPhs.set_xscale("log")
+            plotDataPhs.set_xlabel("Frequency")
+            plotDataPhs.set_yscale("log")
+            plotDataPhs.set_ylabel("Apparent Resistivity")
+            plotDataPhs.grid()
+            return plotDataPhs
+
+    @staticmethod
     def read(FileName):
-        with open(FileName, 'rb') as input:  # Python 3: open(..., 'rb')
-            hasilread = pickle.load(input)
+        with open(FileName, 'rb') as inputdata:  # Python 3: open(..., 'rb')
+            hasilread = pickle.load(inputdata)
         return hasilread
 
+class InvParMT:
+
+    def __init__(self, Eps = 0.05, minError = 0.1, maxIter = 10,Par = 5/100, SmoothnessOrder = 0,LinSolver = 'pinv',InvMethods = 'Marquardt'):
+
+        self.Eps = Eps
+        self.minError = minError
+        self.maxIter = maxIter
+        self.SmoothnessOrder = SmoothnessOrder
+        self.LinSolver = LinSolver
+        self.InvMethods = InvMethods
+        self.Par = Par
+
+    def save(self, FileName):
+        with open(FileName, 'wb') as output:  # Python 3: open(..., 'wb')
+            pickle.dump(self, output)
+
+    @staticmethod
+    def read(FileName):
+        with open(FileName, 'rb') as inputdata:  # Python 3: open(..., 'rb')
+            hasilread = pickle.load(inputdata)
+        return hasilread
+
+
+
+
+
+
+
+
+# ======================================================================================================================
+# ======================================================================================================================
+# =============================                    FUNCTION                         ====================================
+# ======================================================================================================================
+# ======================================================================================================================
 
 def forwardMT1D(ModelMT,DataMT):
     for ii in range(len(DataMT.Frequency)):
         DataMT.AppRes[ii],DataMT.Phase[ii] = forwardFuncMT1D(ModelMT.res, ModelMT.thick, DataMT.Frequency[ii])
     return DataMT
-
 
 
 
@@ -104,26 +165,27 @@ def forwardFuncMT1D(res,thick,freq):
     return AppRes,Phase
 
 
-def calculateJacobMT1D(res,thick,freq,par):
+def calcJacobMT1D(ModelMT,DataMT,InvParMT):
     # dm/dx = f(m) - f(m+dm)/dm
 
     # App = np.zeros(len(freq))
     # Phase = np.zeros(len(freq))
     # App_dm = np.zeros(len(freq))
     # Phase_dm = np.zeros(len(freq))
-    Jacob_App = np.zeros([len(freq),len(res)])
+
+    Jacob_App = np.zeros([len(DataMT.Frequency),len(ModelMT.res)])
     Jacob_Phase = np.copy(Jacob_App)
-    for ii in range(len(res)):
-        res_dm = np.copy(res)
-        dm = res_dm[ii] * par
+    for ii in range(len(ModelMT.res)):
+        res_dm = np.log(np.copy(ModelMT.res))
+        dm = res_dm[ii] * InvParMT.Par
         res_dm[ii] = res_dm[ii]+dm
 
-        for jj in range(len(freq)):
-            App, Phase = forwardMT1D(res, thick, freq[jj])
-            App_dm, Phase_dm = forwardMT1D(res_dm, thick, freq[jj])
+        for jj in range(len(DataMT.Frequency)):
+            App, Phase = forwardFuncMT1D(ModelMT.res, ModelMT.thick, DataMT.Frequency[jj])
+            App_dm, Phase_dm = forwardFuncMT1D(np.exp(res_dm), ModelMT.thick, DataMT.Frequency[jj])
 
-            Jacob_App[jj,ii] = (np.log(App) - np.log(App_dm))/np.log(dm)
-            Jacob_Phase[jj,ii] = (np.log(Phase) - np.log(Phase_dm))/np.log(dm)
+            Jacob_App[jj,ii] = (-np.log(App) + np.log(App_dm))/(dm)
+            Jacob_Phase[jj,ii] = (-np.log(Phase) + np.log(Phase_dm))/(dm)
     Jacob = np.append(Jacob_App,Jacob_Phase,axis=0)
     return Jacob
 
